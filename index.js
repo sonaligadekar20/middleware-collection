@@ -3,6 +3,18 @@ import dotenv from 'dotenv';
 dotenv.config()
 
 const app = express();
+app.use(express.json());
+
+let counter = 0;
+
+const apiCallCounters = (req, res, next)=>{
+    counter++;
+    console.log(`API calls: ${counter}`)
+    next();
+}
+
+app.use(apiCallCounters)
+
 const PORT = process.env.PORT || 3000;
 
 app.get('/', (req, res) => {
@@ -20,7 +32,7 @@ const checkApi = (req, res, next) => {
         next();
     }
     else{
-        return res.json({
+        return res.status(401).json({
             success: false,
             message: 'API Key is Invalid.'
         })
@@ -33,29 +45,39 @@ const validateParams = (req, res, next)=>{
     if(!title){
         return res.json({
             success: true,
-            message: `title is missing `
+            message: `title is missing.`
         })
     }
 
-    if(!title){
+    if(!description){
         return res.json({
             success: true,
-            message: `title is missing `
+            message: `description is missing.`
         })
     }
 
-    if(!title){
+    if(!price){
         return res.json({
             success: true,
-            message: `title is missing `
+            message: `price is missing.`
         })
     }
+    next();
 }
-app.post("/orders", checkApi, async (req, res) => {
+app.post("/orders", checkApi, validateParams, async (req, res) => {
+    res.json({
+        success: true,
+        data: {},
+        message: 'Order is created successfully.'
+    })
+})
+
+app.get("/orders", async(req, res)=>{
+
     res.json({
         success: true,
         data: [],
-        message: 'All orders fetched successfully'
+        message: 'Orders fetched successfully.'
     })
 })
 
