@@ -13,7 +13,7 @@ const apiCallCounters = (req, res, next)=>{
     next();
 }
 
-app.use(apiCallCounters)
+app.use(apiCallCounters);
 
 const PORT = process.env.PORT || 3000;
 
@@ -24,7 +24,7 @@ app.get('/', (req, res) => {
 const checkApi = (req, res, next) => {
     const { apiKey } = req.query;
 
-    if (apiKey==="abc123") {
+    if (apiKey==="sonali") {
         // return res.json({
         //     success: true,
         //     message: 'API Key is valid.'
@@ -72,7 +72,7 @@ app.post("/orders", checkApi, validateParams, async (req, res) => {
     })
 })
 
-app.get("/orders", async(req, res)=>{
+app.get("/orders", checkApi, async(req, res)=>{
 
     res.json({
         success: true,
